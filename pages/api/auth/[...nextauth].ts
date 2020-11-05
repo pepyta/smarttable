@@ -13,6 +13,11 @@ const options: InitOptions = {
       authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline&response_type=code',
     })
   ],
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error', // Error code passed in query string as ?error=
+    newUser: '/auth/new-user' // If set, new users will be directed here on first sign in
+  },
   adapter: Adapters.Prisma.Adapter({ prisma }),
 }
 
