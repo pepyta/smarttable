@@ -1,4 +1,4 @@
-import { Card, CardContent, Container, Grid, Typography, FormControl, InputLabel, Select, MenuItem, Button, makeStyles, createStyles } from "@material-ui/core";
+import { Card, CardContent, Container, Grid, Typography, FormControl, InputLabel, Select, MenuItem, Button, makeStyles, createStyles, CircularProgress } from "@material-ui/core";
 import { getSession, Session } from "next-auth/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -42,7 +42,7 @@ export default function WelcomeBack({ session }: { session: Session }) {
 		const resp = await updateRole(role);
 		enqueueSnackbar(resp.message, { variant: resp.error ? "error" : "success" });
 
-		if(resp.error){
+		if(!resp.error){
 			router.push("/");
 		} else {
 			setLoading(false);
@@ -50,16 +50,25 @@ export default function WelcomeBack({ session }: { session: Session }) {
 	}
 
 	useEffect(() => {
-		if (session === null && typeof window !== 'undefined') router.push("/auth/signin");
-
-		getRole().then((res) => {
-			//if (res.data.role !== "NOT_CHOOSEN") router.push("/");
-			setLoaded(true);
-		});
-
+		if (session === null && typeof window !== 'undefined') {
+			router.push("/auth/signin")
+		} else {
+			getRole().then((res) => {
+				if (res.data.role !== "NOT_CHOOSEN") router.push("/");
+				else setLoaded(true);
+			});
+		}
 	});
 
-	if (!session || !loaded) return (<div />);
+	if (!session || !loaded) return (
+		<Container>
+			<Grid container className={classes.fullHeight} justify="center">
+				<Grid className={classes.verticalCenter} style={{ textAlign: "center" }} item xs={12} md={8} lg={6} xl={4}>
+					<CircularProgress size={65} style={{ marginLeft: "auto", marginRight: "auto" }} />
+				</Grid>
+			</Grid>
+		</Container>
+	);
 
 	return (
 		<Container>
@@ -121,6 +130,10 @@ export default function WelcomeBack({ session }: { session: Session }) {
 
 WelcomeBack.getInitialProps = async (context) => {
 	const session = await getSession(context);
+    if(!session) {
+        context.res.writeHead(301, { Location: '/auth/signin' }); 
+        context.res.end();
+    }
 
 	return {
 		session,

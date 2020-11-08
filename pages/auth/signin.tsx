@@ -4,6 +4,7 @@ import { Button, Grid, Container, Card, CardContent, Typography, createStyles, m
 import { Session } from 'next-auth';
 import { useRouter } from 'next/router';
 import GoogleIcon from '../../components/icons/GoogleIcon';
+import { Router } from '@material-ui/icons';
 
 interface GetProvidersResponse {
     [provider: string]: SessionProvider;
@@ -27,10 +28,6 @@ const useStyles = makeStyles(() =>
 export default function SignIn({ providers, session }: { providers: GetProvidersResponse, session: Session }) {
     const router = useRouter();
     const classes = useStyles();
-
-    useEffect(() => {
-        if (session) router.push("/auth/welcome");
-    });
 
     return (
         <NoSsr>    
@@ -77,8 +74,14 @@ export default function SignIn({ providers, session }: { providers: GetProviders
 }
 
 SignIn.getInitialProps = async (context) => {
+    const session = await getSession(context);
+    if(session) {
+        context.res.writeHead(301, { Location: '/auth/signin' }); 
+        context.res.end();
+    }
+
     return {
         providers: await providers(),
-        session: await getSession(context)
+        session
     }
 }
