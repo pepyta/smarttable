@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ExitToAppRounded as LogoutIcon, HomeRounded as HomeIcon } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import { useSnackbar } from 'notistack';
+import getRole from "../lib/client/role/get";
 
 const drawerWidth = 300;
 
@@ -71,7 +72,12 @@ export default function Base({ children, session }: { children?: any, session: S
 	};
 
 	useEffect(() => {
-		if(!session) router.push("/auth/signin");
+		const check = async () => {	
+			const role = await getRole();
+			if(role.data.role === "NOT_CHOOSEN") router.push("/auth/welcome");
+		};
+
+		check();
 	});
 
 	if(!session) return <div />;
@@ -202,7 +208,14 @@ export default function Base({ children, session }: { children?: any, session: S
 }
 
 Base.getInitialProps = async (context) => {
+	const session = await getSession(context);
+
+    if(!session) {
+        context.res.writeHead(301, { Location: '/auth/signin' }); 
+        context.res.end();
+    }
+
 	return {
-		session: await getSession(context)
+		session
 	};
 };

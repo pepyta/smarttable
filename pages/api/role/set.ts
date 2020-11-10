@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
-import { AvailableRoles } from "./get";
+import { AvailableRoles, getRole } from "./get";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +15,7 @@ export default async function setRole(req: NextApiRequest, res: NextApiResponse)
 	const { role }: { role: AvailableRoles } = JSON.parse(req.body)
 
 	if(!session) throw new Error("No active login found!");
+	if(await getRole(session)) throw new Error("Already choosen role!")
 
 	if(role === "STUDENT") {
 		await prisma.student.create({

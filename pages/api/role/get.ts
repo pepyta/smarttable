@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/client";
+import { getSession, Session } from "next-auth/client";
 
 const prisma = new PrismaClient();
 
@@ -18,6 +18,16 @@ export default async function(req: NextApiRequest, res: NextApiResponse){
 	
 	if(!session) throw new Error("No active login");
 
+	res.json({
+		error: false,
+		data: {
+			role: await getRole(session)
+		}
+	});
+}
+
+export async function getRole(session: Session): Promise<AvailableRoles>{
+	
 	const user = await prisma.user.findOne({
 		where: {
 			email: session.user.email
@@ -31,14 +41,7 @@ export default async function(req: NextApiRequest, res: NextApiResponse){
 	});
 
 	if(teacher !== null) {
-		res.json({
-			error: false,
-			data: {
-				role: "TEACHER"
-			}
-		});
-
-		return;
+		return "TEACHER";
 	}
 
 	const student = await prisma.student.findOne({
@@ -48,20 +51,8 @@ export default async function(req: NextApiRequest, res: NextApiResponse){
 	});
 
 	if(student !== null){
-		res.json({
-			error: false,
-			data: {
-				role: "STUDENT"
-			}
-		});
-
-		return;
+		return "STUDENT";
 	}
 
-	res.json({
-		error: false,
-		data: {
-			role: "NOT_CHOOSEN"
-		}
-	});
+	return "NOT_CHOOSEN";
 }

@@ -76,7 +76,7 @@ export default function SignIn({ providers, session }: { providers: GetProviders
 SignIn.getInitialProps = async (context) => {
     const session = await getSession(context);
     if(session) {
-        context.res.writeHead(301, { Location: '/auth/signin' }); 
+        context.res.writeHead(301, { Location: '/auth/welcome' }); 
         context.res.end();
     }
 
