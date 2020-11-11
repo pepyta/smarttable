@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { getSession, Session, signout } from "next-auth/client";
 import { makeStyles, Grid, Typography, Toolbar, ListItemText, ListItemIcon, ListItem, List, IconButton, Hidden, Drawer, Divider, Dialog, AppBar, Paper, NoSsr, DialogTitle, DialogContentText, DialogActions, Button, DialogContent } from '@material-ui/core';
-import { MenuRounded } from "@material-ui/icons";
+import { AddRounded, ContactsRounded, MenuRounded } from "@material-ui/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { ExitToAppRounded as LogoutIcon, HomeRounded as HomeIcon } from "@material-ui/icons";
@@ -64,6 +64,7 @@ export default function Base({ children, session }: { children?: any, session: S
 	const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [modalOpen, setModalOpen] = React.useState(false);
+	const [tables, setTables]: [BaseTableComponentType[], Dispatch<SetStateAction<BaseTableComponentType[]>>] = React.useState([]);
 	const router = useRouter();
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -73,8 +74,15 @@ export default function Base({ children, session }: { children?: any, session: S
 
 	useEffect(() => {
 		const check = async () => {	
-			const role = await getRole();
-			if(role.data.role === "NOT_CHOOSEN") router.push("/auth/welcome");
+			const tableRaw = localStorage.getItem("tables");
+			if(tableRaw !== undefined && tableRaw !== null) setTables(JSON.parse(tableRaw));
+
+			try {
+				const role = await getRole();
+				if(role.data.role === "NOT_CHOOSEN") router.push("/auth/welcome");
+			} catch {
+				router.push("/auth/welcome");
+			}
 		};
 
 		check();
@@ -107,6 +115,25 @@ export default function Base({ children, session }: { children?: any, session: S
 					<ListItem button key={"home-button"}>
 						<ListItemIcon><HomeIcon /></ListItemIcon>
 						<ListItemText primary={"Főoldal"} />
+					</ListItem>
+				</Link>
+			</List>
+			<Divider />
+			<List>
+				{tables.map((table) => {
+					return (
+						<Link href={"/tables/"+table.id}>	
+							<ListItem button key={"table-"+table.id}>
+								<ListItemIcon><ContactsRounded /></ListItemIcon>
+								<ListItemText primary={table.name} />
+							</ListItem>
+						</Link>
+					);
+				})}
+				<Link href="/tables/create">	
+					<ListItem button key={"new-table-button"}>
+						<ListItemIcon><AddRounded /></ListItemIcon>
+						<ListItemText primary={"Új táblázat"} />
 					</ListItem>
 				</Link>
 			</List>
@@ -207,12 +234,19 @@ export default function Base({ children, session }: { children?: any, session: S
 	);
 }
 
+export type BaseTableComponentType = {
+	id: number;
+	name: string;
+};
+
 Base.getInitialProps = async (context) => {
 	const session = await getSession(context);
 
     if(!session) {
-        context.res.writeHead(301, { Location: '/auth/signin' }); 
-        context.res.end();
+		try {
+			context.res.writeHead(301, { Location: '/auth/signin' }); 
+			context.res.end();
+		} catch {}
     }
 
 	return {

@@ -72,7 +72,8 @@ model Table {
   students      Student[]
   iconid        Int?
   icon          Image?       @relation(references: [id], fields: [iconid])
-  task          Task[]
+  tasks         Task[]
+  badges        Badge[]
 }
 
 model TaskCompletion {
@@ -95,16 +96,17 @@ model BadgeCompletion {
 
 model Task {
   id            Int          @default(autoincrement()) @id
-  name          String?
+  name          String
   points        Int
+  description   String?
   endsAt        DateTime     @default(now())
 }
 
 model Badge {
   id            Int          @default(autoincrement()) @id
   name          String?
-  imageid       Int
-  image         Image        @relation(references: [id], fields: [imageid])
+  imageid       Int?
+  image         Image?       @relation(references: [id], fields: [imageid])
 }
 
 model Image {

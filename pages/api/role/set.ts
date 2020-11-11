@@ -15,7 +15,7 @@ export default async function setRole(req: NextApiRequest, res: NextApiResponse)
 	const { role }: { role: AvailableRoles } = JSON.parse(req.body)
 
 	if(!session) throw new Error("No active login found!");
-	if(await getRole(session)) throw new Error("Already choosen role!")
+	if(await getRole(session) !== "NOT_CHOOSEN") throw new Error("Already choosen role!")
 
 	if(role === "STUDENT") {
 		await prisma.student.create({
