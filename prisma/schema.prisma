@@ -74,6 +74,7 @@ model Table {
   icon          Image?       @relation(references: [id], fields: [iconid])
   tasks         Task[]
   badges        Badge[]
+  createdAt     DateTime     @default(now())
 }
 
 model TaskCompletion {

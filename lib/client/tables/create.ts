@@ -19,6 +19,8 @@ export default async function createTable(data: CreateTableApiRequestBody): Prom
         }
     }
 
+    if(data.icon) formData.append(`icon`, data.icon);
+
     const resp = await axios.post(`${API_ENDPOINT}/tables/create`, formData);
 
     if(resp.data.error){

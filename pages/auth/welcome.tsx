@@ -130,7 +130,7 @@ export default function WelcomeBack({ session }: { session: Session }) {
 
 WelcomeBack.getInitialProps = async (context) => {
 	const session = await getSession(context);
-    if(!session) {
+	if(!session && context.res !== undefined) {
         context.res.writeHead(301, { Location: '/auth/signin' }); 
         context.res.end();
     }

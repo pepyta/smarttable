@@ -76,7 +76,7 @@ export default async function getTables(req: NextApiRequest, res: NextApiRespons
                     tables
                 }
             })
-        }
+        } else throw new Error("Not choosen");
         
     } catch(e) {
         res.json({

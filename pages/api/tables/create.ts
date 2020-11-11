@@ -18,6 +18,7 @@ export const config = {
 
 export type CreateTableApiRequestBody = {
     name: string;
+    icon: File;
     badges: BadgeRow[];
     tasks: TaskRow[];
 };
@@ -29,15 +30,17 @@ export default async function createTable(req: NextApiRequest, res: NextApiRespo
         const session = await getSession({ req });
         const form = new formidable.IncomingForm();
     
-        form.uploadDir = "./public/img";
+        form.uploadDir = "./public/img/uploads";
         form.keepExtensions = true;
         form.parse(req, async (err, fields, files) => {
             for(let id in files){
                 const file = files[id];
-                const number = parseInt(id.replace("badge-", ""));
-                images[number] = file;
+                if(id.startsWith("badge")) {
+                    const number = parseInt(id.replace("badge-", ""));
+                    images[number] = file;
+                }
             }
-            console.log(fields);
+
             const data: CreateTableApiRequestBody = JSON.parse(fields["data"]+"");
             if (!session) throw new Error("No active login found!");
             if (await getRole(session) !== "TEACHER") throw new Error("Forbidden");
@@ -87,6 +90,13 @@ export default async function createTable(req: NextApiRequest, res: NextApiRespo
                             }
                         })
                     },
+                    icon: {
+                        create: {
+                            width: sizeOf(fs.readFileSync(files["icon"].path)).width,
+                            height: sizeOf(fs.readFileSync(files["icon"].path)).height,
+                            path: files["icon"].path
+                        }
+                    }
                 }
             })
 

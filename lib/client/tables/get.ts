@@ -13,13 +13,15 @@ export type GetTablesResponse = (Table & {
     };
 })[];
 
-export default async function getRole(): Promise<GetTablesResponse> {
+export default async function getTables(): Promise<GetTablesResponse> {
 	const resp = await fetch(`${API_ENDPOINT}/tables/get`);
     const json = await resp.json();
 
     if(json.error){
         throw new Error(json.message);
     } else {
+        localStorage.setItem("tables", JSON.stringify(json.data.tables.map((table) => { return { name: table.name, id: table.id } })));
+        
         return json.data.tables;
     }
 }

@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, TextField, Typography, makeStyles } from "@material-ui/core";
+import { Card, CardContent, Grid, TextField, Typography, makeStyles, Button } from "@material-ui/core";
 import { useState } from "react";
 import { BasicInformation, TaskRow } from "../../../pages/tables/create";
 
@@ -16,6 +16,25 @@ export default function BasicTableInformation({ basic, updateNumberOfTasks, upda
                             basic.name = e.target.value;
                             setName(e.target.value)
                         }} label="Táblázat neve" variant="filled" />
+                    </Grid>
+                    <Grid item xs={12}>
+                        
+                        <label htmlFor={`icon-file-upload`} >
+                                <input
+                                    style={{ display: 'none' }}
+                                    id={`icon-file-upload`}
+                                    name={`icon-file-upload}`}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                        basic.icon = e.target.files[0];
+                                    }}
+                                />
+
+                                <Button fullWidth color="primary" variant="contained" component="span">
+                                    Kép feltöltése
+                                </Button>
+                            </label>
                     </Grid>
                     <Grid item xs={6}>
                         <TextField fullWidth required type="number" value={numOfBadge} onChange={(e) => {

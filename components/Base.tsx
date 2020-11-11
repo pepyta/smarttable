@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { getSession, Session, signout } from "next-auth/client";
 import { makeStyles, Grid, Typography, Toolbar, ListItemText, ListItemIcon, ListItem, List, IconButton, Hidden, Drawer, Divider, Dialog, AppBar, Paper, NoSsr, DialogTitle, DialogContentText, DialogActions, Button, DialogContent } from '@material-ui/core';
-import { AddRounded, ContactsRounded, MenuRounded } from "@material-ui/icons";
+import { AddRounded, ContactsRounded, GroupRounded, MenuRounded } from "@material-ui/icons";
 import Image from "next/image";
 import Link from "next/link";
 import { ExitToAppRounded as LogoutIcon, HomeRounded as HomeIcon } from "@material-ui/icons";
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(3),
 		marginTop: 56,
 		[theme.breakpoints.up('sm')]: {
-			maxWidth: "calc(100vw - "+drawerWidth+"px)",
+			maxWidth: "calc(100vw - " + drawerWidth + "px)",
 			marginTop: 0
 		},
 		maxWidth: "100vw"
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Base({ children, session }: { children?: any, session: Session }){
+export default function Base({ children, session }: { children?: any, session: Session }) {
 	const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [modalOpen, setModalOpen] = React.useState(false);
@@ -73,22 +73,24 @@ export default function Base({ children, session }: { children?: any, session: S
 	};
 
 	useEffect(() => {
-		const check = async () => {	
-			const tableRaw = localStorage.getItem("tables");
-			if(tableRaw !== undefined && tableRaw !== null) setTables(JSON.parse(tableRaw));
-
+		const check = async () => {
 			try {
 				const role = await getRole();
-				if(role.data.role === "NOT_CHOOSEN") router.push("/auth/welcome");
+				if (role.data.role === "NOT_CHOOSEN") router.push("/auth/welcome");
 			} catch {
 				router.push("/auth/welcome");
 			}
 		};
 
 		check();
-	});
+	}, []);
 
-	if(!session) return <div />;
+	useEffect(() => {
+		const tableRaw = localStorage.getItem("tables");
+		if (tableRaw !== undefined && tableRaw !== null) setTables(JSON.parse(tableRaw));
+	}, []);
+
+	if (!session) return <div />;
 
 	const drawer = (
 		<div>
@@ -111,7 +113,7 @@ export default function Base({ children, session }: { children?: any, session: S
 			</div>
 			<Divider />
 			<List>
-				<Link href="/">	
+				<Link href="/">
 					<ListItem button key={"home-button"}>
 						<ListItemIcon><HomeIcon /></ListItemIcon>
 						<ListItemText primary={"Főoldal"} />
@@ -122,15 +124,15 @@ export default function Base({ children, session }: { children?: any, session: S
 			<List>
 				{tables.map((table) => {
 					return (
-						<Link href={"/tables/"+table.id}>	
-							<ListItem button key={"table-"+table.id}>
-								<ListItemIcon><ContactsRounded /></ListItemIcon>
+						<Link href={"/tables/" + table.id}>
+							<ListItem button key={"table-" + table.id}>
+								<ListItemIcon><GroupRounded /></ListItemIcon>
 								<ListItemText primary={table.name} />
 							</ListItem>
 						</Link>
 					);
 				})}
-				<Link href="/tables/create">	
+				<Link href="/tables/create">
 					<ListItem button key={"new-table-button"}>
 						<ListItemIcon><AddRounded /></ListItemIcon>
 						<ListItemText primary={"Új táblázat"} />
@@ -139,7 +141,7 @@ export default function Base({ children, session }: { children?: any, session: S
 			</List>
 			<Divider />
 			<List>
-				<a onClick={() => { setModalOpen(true) }}>	
+				<a onClick={() => { setModalOpen(true) }}>
 					<ListItem button key={"logout-button"}>
 						<ListItemIcon><LogoutIcon /></ListItemIcon>
 						<ListItemText primary={"Kijelentkezés"} />
@@ -148,7 +150,7 @@ export default function Base({ children, session }: { children?: any, session: S
 			</List>
 		</div>
 	);
-	
+
 	const handleClose = () => {
 		setModalOpen(false);
 	};
@@ -169,7 +171,7 @@ export default function Base({ children, session }: { children?: any, session: S
 						</Button>
 						<Button onClick={async () => {
 							await signout();
-							
+
 							router.push({
 								pathname: "/auth/signin"
 							});
@@ -242,12 +244,10 @@ export type BaseTableComponentType = {
 Base.getInitialProps = async (context) => {
 	const session = await getSession(context);
 
-    if(!session) {
-		try {
-			context.res.writeHead(301, { Location: '/auth/signin' }); 
-			context.res.end();
-		} catch {}
-    }
+	if (!session && context.res !== undefined) {
+		context.res.writeHead(301, { Location: '/auth/signin' });
+		context.res.end();
+	}
 
 	return {
 		session

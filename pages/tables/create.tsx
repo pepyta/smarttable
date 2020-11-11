@@ -32,6 +32,7 @@ export type BasicInformation = {
     name: string;
     numOfBadges: number;
     numOfTasks: number;
+    icon?: File;
 }
 
 function createArrayWithNum(num: number, current: any[], value: any) {
@@ -56,7 +57,8 @@ let badges: BadgeRow[] = createArrayWithNum(3, [], { name: null, icon: null });
 const basic: BasicInformation = {
     name: null,
     numOfBadges: 3,
-    numOfTasks: 3
+    numOfTasks: 3,
+    icon: null
 };
 
 const updateTasks = (task: TaskRow, index: number) => {
@@ -93,7 +95,8 @@ export default function TableCreation({ session }: { session: Session }) {
             const resp = await createTable({
                 name: basic.name,
                 tasks,
-                badges
+                badges,
+                icon: basic.icon
             });
     
             enqueueSnackbar(resp.message, { variant: "success" });
