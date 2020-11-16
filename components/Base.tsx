@@ -45,9 +45,11 @@ const useStyles = makeStyles((theme) => ({
 	drawerPaper: {
 		width: drawerWidth,
 	},
+	padding: {
+		padding: theme.spacing(3),
+	},
 	content: {
 		flexGrow: 1,
-		padding: theme.spacing(3),
 		marginTop: 56,
 		[theme.breakpoints.up('sm')]: {
 			maxWidth: "calc(100vw - " + drawerWidth + "px)",
@@ -60,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Base({ children, session }: { children?: any, session: Session }) {
+export default function Base({ children, session, padding = true }: { children?: any, session: Session, padding?: boolean }) {
 	const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = React.useState(false);
 	const [modalOpen, setModalOpen] = React.useState(false);
@@ -228,7 +230,7 @@ export default function Base({ children, session }: { children?: any, session: S
 						</Drawer>
 					</Hidden>
 				</nav>
-				<main className={classes.content}>
+				<main className={`${classes.content} ${classes.padding}`}>
 					{children}
 				</main>
 			</div>

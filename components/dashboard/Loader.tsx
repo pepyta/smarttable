@@ -15,7 +15,7 @@ const useStyles = makeStyles(() =>
 			marginBottom: "auto"
 		},
 		fullHeight: {
-			minHeight: "100vh"
+			minHeight: "calc(100vh - 54px)"
 		}
 	}),
 );

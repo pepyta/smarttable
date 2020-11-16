@@ -12,10 +12,15 @@ export type CreateTableApiRequestBody = {
 
 const tableIncludes = {
     include: {
-        tasks: true,
+        tasks: {
+            include: {
+                TaskCompletion: true
+            }
+        },
         badges: {
             include: {
-                image: true
+                image: true,
+                BadgeCompletion: true
             }
         },
         icon: true,
@@ -29,10 +34,11 @@ const tableIncludes = {
 
 const prisma = new PrismaClient();
 
-export default async function getTables(req: NextApiRequest, res: NextApiResponse) {
+export default async function getOneTable(req: NextApiRequest, res: NextApiResponse) {
     try {
         const session = await getSession({ req });
         if (!session) throw new Error("No active login found!");
+        const { id }: { id: number } = JSON.parse(req.body);
 
         const role = await getRole(session);
         const user = await prisma.user.findOne({
@@ -42,9 +48,9 @@ export default async function getTables(req: NextApiRequest, res: NextApiRespons
         });
 
         if(role === "TEACHER"){
-            const tables = await prisma.table.findMany({
+            const table = await prisma.table.findOne({
                 where: {
-                    teacherId: user.id,
+                    id
                 },
                 ...tableIncludes
             });
@@ -52,25 +58,23 @@ export default async function getTables(req: NextApiRequest, res: NextApiRespons
             res.json({
                 error: false,
                 data: {
-                    tables
+                    table
                 }
             });
         } else if(role === "STUDENT"){
-            const connections = await prisma.student.findMany({
+            const connections = await prisma.student.findFirst({
                 where: {
-                    userid: user.id
+                    tableId: id
                 },
                 include: {
                     Table: tableIncludes
                 }
             });
 
-            const tables = connections.map((conn) => conn.Table);
-
             res.json({
                 error: false,
                 data: {
-                    tables
+                    table: connections.Table
                 }
             })
         } else throw new Error("Not choosen");
