@@ -51,6 +51,16 @@ export default async function createTable(req: NextApiRequest, res: NextApiRespo
                 }
             });
     
+            const icon = files["icon"] ? {
+                icon: {
+                     create: {
+                         width: sizeOf(fs.readFileSync(files["icon"].path)).width,
+                         height: sizeOf(fs.readFileSync(files["icon"].path)).height,
+                         path: files["icon"].path
+                     }
+                 }
+            } : {};
+
             const table = await prisma.table.create({
                 data: {
                     name: data.name,
@@ -72,6 +82,7 @@ export default async function createTable(req: NextApiRequest, res: NextApiRespo
                     badges: {
                         create: data.badges.map((badge, index) => {
                             if(images[index] !== undefined){
+                                console.log(images[index]);
                                 const dimensions = sizeOf(fs.readFileSync(images[index].path));
                                 return {
                                     name: badge.name,
@@ -90,13 +101,7 @@ export default async function createTable(req: NextApiRequest, res: NextApiRespo
                             }
                         })
                     },
-                    icon: {
-                        create: {
-                            width: sizeOf(fs.readFileSync(files["icon"].path)).width,
-                            height: sizeOf(fs.readFileSync(files["icon"].path)).height,
-                            path: files["icon"].path
-                        }
-                    }
+                    ...icon
                 }
             })
 

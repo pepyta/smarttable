@@ -1,3 +1,4 @@
+import "../public/css/global.css";
 import React from 'react';
 import { AppProps } from 'next/dist/next-server/lib/router/router';
 import { ThemeProvider, createMuiTheme, CssBaseline, NoSsr } from '@material-ui/core';

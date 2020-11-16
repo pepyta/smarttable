@@ -1,14 +1,21 @@
-import { Table, Task, Teacher, User, Image, Badge, BadgeCompletion, TaskCompletion } from "@prisma/client";
+import { Table, Task, Teacher, User, Image, Badge, BadgeCompletion, TaskCompletion, Student } from "@prisma/client";
 
 export const API_ENDPOINT = "http://localhost:3000/api";
 
 export type GetSingleTableResponse = Table & {
     tasks: (Task & {
-        TaskCompletion: TaskCompletion[];
+        TaskCompletion: (TaskCompletion & {
+            user: User;
+        })[];
     })[];
     badges: (Badge & {
         image: Image;
-        BadgeCompletion: BadgeCompletion[];
+        BadgeCompletion: (BadgeCompletion & {
+            user: User;
+        });
+    })[];
+    students: (Student & {
+        user: User;
     })[];
     icon: Image;
     teacher: Teacher & {

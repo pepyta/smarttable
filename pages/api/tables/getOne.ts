@@ -12,15 +12,28 @@ export type CreateTableApiRequestBody = {
 
 const tableIncludes = {
     include: {
+        students: {
+            include: {
+                user: true
+            }
+        },
         tasks: {
             include: {
-                TaskCompletion: true
+                TaskCompletion: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         },
         badges: {
             include: {
                 image: true,
-                BadgeCompletion: true
+                BadgeCompletion: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         },
         icon: true,
@@ -30,7 +43,7 @@ const tableIncludes = {
             }
         }
     }
-}
+};
 
 const prisma = new PrismaClient();
 

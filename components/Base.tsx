@@ -230,7 +230,7 @@ export default function Base({ children, session, padding = true }: { children?:
 						</Drawer>
 					</Hidden>
 				</nav>
-				<main className={`${classes.content} ${classes.padding}`}>
+				<main className={`${classes.content} ${padding ? classes.padding : ""}`}>
 					{children}
 				</main>
 			</div>
