@@ -27,32 +27,11 @@ export default async function(req: NextApiRequest, res: NextApiResponse){
 }
 
 export async function getRole(session: Session): Promise<AvailableRoles>{
-	
 	const user = await prisma.user.findOne({
 		where: {
 			email: session.user.email
 		}
 	});
 
-	const teacher = await prisma.teacher.findOne({
-		where: {
-			userid: user.id
-		}
-	});
-
-	if(teacher !== null) {
-		return "TEACHER";
-	}
-
-	const student = await prisma.student.findOne({
-		where: {
-			userid: user.id
-		}
-	});
-
-	if(student !== null){
-		return "STUDENT";
-	}
-
-	return "NOT_CHOOSEN";
+	return user.role;
 }

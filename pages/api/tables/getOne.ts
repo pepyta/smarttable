@@ -37,11 +37,7 @@ const tableIncludes = {
             }
         },
         icon: true,
-        teacher: {
-            include: {
-                user: true
-            }
-        }
+        teacher: true
     }
 };
 
@@ -77,17 +73,17 @@ export default async function getOneTable(req: NextApiRequest, res: NextApiRespo
         } else if(role === "STUDENT"){
             const connections = await prisma.student.findFirst({
                 where: {
-                    tableId: id
+                    tableid: id
                 },
                 include: {
-                    Table: tableIncludes
+                    table: tableIncludes
                 }
             });
 
             res.json({
                 error: false,
                 data: {
-                    table: connections.Table
+                    table: connections.table
                 }
             })
         } else throw new Error("Not choosen");

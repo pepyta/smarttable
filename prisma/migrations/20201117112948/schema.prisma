@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
+  provider = ["mysql"]
   url = "***"
 }
 
@@ -50,25 +50,25 @@ model User {
   image         String?
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @default(now()) @map(name: "updated_at")
-
+  role          Role      @default(NOT_CHOOSEN)
+  
   @@map(name: "users")
 }
 
-model Teacher {
-  userid            Int       @id
-  user              User      @relation(references: [id], fields: [userid])
-}
-
 model Student {
-  userid            Int       @id
+  userid            Int       
   user              User      @relation(references: [id], fields: [userid])
+  tableid           Int
+  table             Table      @relation(references: [id], fields: [tableid])
+
+  @@id([userid, tableid])
 }
 
 model Table {
   id            Int          @default(autoincrement()) @id
   name          String
   teacherId     Int
-  teacher       Teacher      @relation(references: [userid], fields: [teacherId])
+  teacher       User      @relation(references: [id], fields: [teacherId])
   students      Student[]
   iconid        Int?
   icon          Image?       @relation(references: [id], fields: [iconid])
@@ -120,7 +120,7 @@ model Image {
 model Invitations {
   id            Int       @default(autoincrement()) @id
   studentid     Int
-  student       Student   @relation(references: [userid], fields: [studentid])
+  student       User   @relation(references: [id], fields: [studentid])
   tableid       Int
   table         Table     @relation(references: [id], fields: [tableid])
   createdAt     DateTime  @default(now())
@@ -150,4 +150,10 @@ model migration {
   started_at         DateTime
   finished_at        DateTime?
   @@map("_migration")
+}
+
+enum Role {
+  TEACHER
+  STUDENT
+  NOT_CHOOSEN
 }

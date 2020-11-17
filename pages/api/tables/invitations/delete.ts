@@ -1,4 +1,4 @@
-import { Invitations, PrismaClient, Table, Teacher, User } from "@prisma/client";
+import { Invitations, PrismaClient, Table, User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/client";
 

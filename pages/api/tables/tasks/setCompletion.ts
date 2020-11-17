@@ -37,25 +37,26 @@ export default async function setTaskCompletion(req: NextApiRequest, res: NextAp
         });
 
         if(check === null) throw new Error("Ezt a táblát törölték.");
-
-        if(check.Table.students.filter((el) => el.user.id !== user.id)) throw new Error("Nincs hozzáférésed ehhez a táblához.");
+        if(check.Table.students.filter((el) => el.user.id === user.id).length === 0) throw new Error("Nincs hozzáférésed ehhez a táblához.");
         if(new Date(check.endsAt) < new Date()) throw new Error("Már lejárt a határidő.");
 
         if(completed){
-            await prisma.taskCompletion.create({
-                data: {
-                    task: {
-                        connect: {
-                            id
-                        }
-                    },
-                    user: {
-                        connect: {
-                            id: user.id
+            try {
+                await prisma.taskCompletion.create({
+                    data: {
+                        task: {
+                            connect: {
+                                id
+                            }
+                        },
+                        user: {
+                            connect: {
+                                id: user.id
+                            }
                         }
                     }
-                }
-            });
+                });
+            } catch {}
         } else {
             await prisma.taskCompletion.delete({
                 where: {

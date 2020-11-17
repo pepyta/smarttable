@@ -1,4 +1,4 @@
-import { Table, Task, Teacher, User, Image, Badge } from "@prisma/client";
+import { Table, Task, User, Image, Badge } from "@prisma/client";
 
 export const API_ENDPOINT = "http://localhost:3000/api";
 
@@ -8,9 +8,7 @@ export type GetTablesResponse = (Table & {
         image: Image;
     })[];
     icon: Image;
-    teacher: Teacher & {
-        user: User;
-    };
+    teacher: User;
 })[];
 
 export default async function getTables(): Promise<GetTablesResponse> {

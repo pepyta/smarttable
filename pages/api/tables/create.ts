@@ -66,7 +66,7 @@ export default async function createTable(req: NextApiRequest, res: NextApiRespo
                     name: data.name,
                     teacher: {
                         connect: {
-                            userid: user.id
+                            id: user.id
                         }
                     },
                     tasks: {

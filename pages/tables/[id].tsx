@@ -5,12 +5,13 @@ import { useSnackbar } from "notistack";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Base from "../../components/Base";
 import LoaderComponent from "../../components/dashboard/Loader";
+import BadgesList from "../../components/tables/single/badges/BadgesList";
 import ListTasks from "../../components/tables/single/tasks/ListTasks";
 import getRole from "../../lib/client/role/get";
 import getSingleTable, { GetSingleTableResponse } from "../../lib/client/tables/getOne";
 import { AvailableRoles } from "../api/role/get";
 
-type TabState = "TASKS" | "STUDENTS" | "BADGES";
+type TabState = ("TASKS" | "STUDENTS" | "BADGES");
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -69,7 +70,7 @@ export default function SingleTable({ session }: { session: Session }) {
                                     {data.name}
                                 </Typography>
                                 <Typography variant="h6" component="h3" noWrap gutterBottom>
-                                    {data.teacher.user.name}
+                                    {data.teacher.name}
                                 </Typography>
                             </div>
                             <Tabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="auto">
@@ -85,6 +86,8 @@ export default function SingleTable({ session }: { session: Session }) {
                 <Grid container justify="center">
                     <Grid item xs={12} md={8} className={classes.padTop}>
                         <ListTasks allUser={data.students.map((el) => el.user)} session={session} show={tab === "TASKS"} role={role} tasks={data.tasks} />
+                        {/* @ts-ignore */}
+                        <BadgesList allUser={data.students.map((el) => el.user)} session={session} show={tab === "BADGES"} role={role} badges={data.badges} />
                     </Grid>
                 </Grid>
             </Container>

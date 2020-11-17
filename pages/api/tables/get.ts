@@ -19,11 +19,7 @@ const tableIncludes = {
             }
         },
         icon: true,
-        teacher: {
-            include: {
-                user: true
-            }
-        }
+        teacher: true
     }
 }
 
@@ -58,14 +54,14 @@ export default async function getTables(req: NextApiRequest, res: NextApiRespons
         } else if(role === "STUDENT"){
             const connections = await prisma.student.findMany({
                 where: {
-                    userid: user.id
+                    userid: user.id,
                 },
                 include: {
-                    Table: tableIncludes
+                    table: tableIncludes
                 }
             });
 
-            const tables = connections.map((conn) => conn.Table);
+            const tables = connections.map((conn) => conn.table);
 
             res.json({
                 error: false,

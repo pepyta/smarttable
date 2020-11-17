@@ -40,7 +40,7 @@ export default async function invite(req: NextApiRequest, res: NextApiResponse) 
             data: {
                 student: {
                     connect: {
-                        userid: student.id
+                        id: student.id
                     }
                 },
                 table: {

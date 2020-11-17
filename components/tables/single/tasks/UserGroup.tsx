@@ -44,7 +44,7 @@ export default function TaskListUserGroup({ shouldBeCompleted, completed, allUse
     }
 
     return (
-        <Grid container>
+        <Grid container alignItems="center">
             <Grid item xs={4}>
                 <Typography noWrap>
                     Eddig ő(k) {!shouldBeCompleted ? "nem" : ""} készültek el:

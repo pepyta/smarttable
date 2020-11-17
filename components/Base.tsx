@@ -69,6 +69,7 @@ export default function Base({ children, session, padding = true }: { children?:
 	const [tables, setTables]: [BaseTableComponentType[], Dispatch<SetStateAction<BaseTableComponentType[]>>] = React.useState([]);
 	const router = useRouter();
 	const { enqueueSnackbar } = useSnackbar();
+	const [stateRole, setStateRole] = React.useState(null);
 
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
@@ -79,6 +80,7 @@ export default function Base({ children, session, padding = true }: { children?:
 			try {
 				const role = await getRole();
 				if (role.data.role === "NOT_CHOOSEN") router.push("/auth/welcome");
+				setStateRole(role);
 			} catch {
 				router.push("/auth/welcome");
 			}
@@ -106,10 +108,10 @@ export default function Base({ children, session, padding = true }: { children?:
 					<Grid item xs={8} style={{
 						alignSelf: "center"
 					}}>
-						<Typography variant="body1">
+						<Typography variant="body1" noWrap>
 							{session.user.name}
 						</Typography>
-						<Typography variant="body2">{session.user.email}</Typography>
+						<Typography variant="body2" noWrap>{session.user.email}</Typography>
 					</Grid>
 				</Grid>
 			</div>
@@ -123,6 +125,7 @@ export default function Base({ children, session, padding = true }: { children?:
 				</Link>
 			</List>
 			<Divider />
+
 			<List>
 				{tables.map((table) => {
 					return (
@@ -134,14 +137,17 @@ export default function Base({ children, session, padding = true }: { children?:
 						</Link>
 					);
 				})}
-				<Link href="/tables/create">
-					<ListItem button key={"new-table-button"}>
-						<ListItemIcon><AddRounded /></ListItemIcon>
-						<ListItemText primary={"Új táblázat"} />
-					</ListItem>
-				</Link>
+
+				{stateRole === "TEACHER" ? (
+					<Link href="/tables/create">
+						<ListItem button key={"new-table-button"}>
+							<ListItemIcon><AddRounded /></ListItemIcon>
+							<ListItemText primary={"Új táblázat"} />
+						</ListItem>
+					</Link>
+				) : ""}
 			</List>
-			<Divider />
+			{stateRole === "TEACHER" || tables.length > 0 ? (<Divider />) : ""}
 			<List>
 				<a onClick={() => { setModalOpen(true) }}>
 					<ListItem button key={"logout-button"}>

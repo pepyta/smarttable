@@ -1,4 +1,4 @@
-import { Table, Task, Teacher, User, Image, Badge, BadgeCompletion, TaskCompletion, Student } from "@prisma/client";
+import { Table, Task, User, Image, Badge, BadgeCompletion, TaskCompletion, Student } from "@prisma/client";
 
 export const API_ENDPOINT = "http://localhost:3000/api";
 
@@ -12,15 +12,13 @@ export type GetSingleTableResponse = Table & {
         image: Image;
         BadgeCompletion: (BadgeCompletion & {
             user: User;
-        });
+        })[];
     })[];
     students: (Student & {
         user: User;
     })[];
     icon: Image;
-    teacher: Teacher & {
-        user: User;
-    };
+    teacher: User;
 };
 
 export default async function getSingleTable(id: number): Promise<GetSingleTableResponse> {

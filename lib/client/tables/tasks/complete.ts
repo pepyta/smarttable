@@ -1,4 +1,4 @@
-import { Table, Task, Teacher, User, Image, Badge } from "@prisma/client";
+import { Table, Task, User, Image, Badge } from "@prisma/client";
 import { API_ENDPOINT } from "../../invitations/get";
 
 export default async function setCompletion(id: number, completed: boolean) {

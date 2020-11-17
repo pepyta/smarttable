@@ -2,6 +2,15 @@
   "version": "0.3.14-fixed",
   "steps": [
     {
+      "tag": "CreateEnum",
+      "enum": "Role",
+      "values": [
+        "TEACHER",
+        "STUDENT",
+        "NOT_CHOOSEN"
+      ]
+    },
+    {
       "tag": "CreateSource",
       "source": "db"
     },
@@ -12,7 +21,7 @@
         "source": "db"
       },
       "argument": "provider",
-      "value": "\"mysql\""
+      "value": "[\"mysql\"]"
     },
     {
       "tag": "CreateArgument",
@@ -1069,6 +1078,38 @@
       "value": "\"updated_at\""
     },
     {
+      "tag": "CreateField",
+      "model": "User",
+      "field": "role",
+      "type": "Role",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "role"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "User",
+          "field": "role"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "NOT_CHOOSEN"
+    },
+    {
       "tag": "CreateDirective",
       "location": {
         "path": {
@@ -1093,74 +1134,6 @@
     },
     {
       "tag": "CreateModel",
-      "model": "Teacher"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Teacher",
-      "field": "userid",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Teacher",
-          "field": "userid"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateField",
-      "model": "Teacher",
-      "field": "user",
-      "type": "User",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Teacher",
-          "field": "user"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Teacher",
-          "field": "user"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Teacher",
-          "field": "user"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[userid]"
-    },
-    {
-      "tag": "CreateModel",
       "model": "Student"
     },
     {
@@ -1171,17 +1144,6 @@
       "arity": "Required"
     },
     {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Student",
-          "field": "userid"
-        },
-        "directive": "id"
-      }
-    },
-    {
       "tag": "CreateField",
       "model": "Student",
       "field": "user",
@@ -1226,6 +1188,82 @@
       },
       "argument": "fields",
       "value": "[userid]"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Student",
+      "field": "tableid",
+      "type": "Int",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateField",
+      "model": "Student",
+      "field": "table",
+      "type": "Table",
+      "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Student",
+          "field": "table"
+        },
+        "directive": "relation"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Student",
+          "field": "table"
+        },
+        "directive": "relation"
+      },
+      "argument": "references",
+      "value": "[id]"
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Student",
+          "field": "table"
+        },
+        "directive": "relation"
+      },
+      "argument": "fields",
+      "value": "[tableid]"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Model",
+          "model": "Student"
+        },
+        "directive": "id"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Model",
+          "model": "Student"
+        },
+        "directive": "id"
+      },
+      "argument": "",
+      "value": "[userid, tableid]"
     },
     {
       "tag": "CreateModel",
@@ -1292,7 +1330,7 @@
       "tag": "CreateField",
       "model": "Table",
       "field": "teacher",
-      "type": "Teacher",
+      "type": "User",
       "arity": "Required"
     },
     {
@@ -1318,7 +1356,7 @@
         "directive": "relation"
       },
       "argument": "references",
-      "value": "[userid]"
+      "value": "[id]"
     },
     {
       "tag": "CreateArgument",
@@ -2039,7 +2077,7 @@
       "tag": "CreateField",
       "model": "Invitations",
       "field": "student",
-      "type": "Student",
+      "type": "User",
       "arity": "Required"
     },
     {
@@ -2065,7 +2103,7 @@
         "directive": "relation"
       },
       "argument": "references",
-      "value": "[userid]"
+      "value": "[id]"
     },
     {
       "tag": "CreateArgument",
