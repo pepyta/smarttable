@@ -8,8 +8,8 @@ const useStyles = makeStyles((theme) => {
             filter: "grayscale(1)"
         },
         icon: {
-            minHeight: 64,
-            width: 64
+            margin: "auto",
+            textAlign: "center"
         },
         earnedLetter: {
             backgroundColor: theme.palette.primary.main,
@@ -27,16 +27,20 @@ export default function SingleBadge({ image, alt, earned }: { image?: PrismaImag
 
     return (
         <Grid item>
-            <Tooltip title={alt}>
-                <div className={classes.icon}>
-                    {image ? (
-                        <Image width={(64 * image.width) / image.height} height={64} className={`${!earned ? classes.greyscale : ""} ${classes.vcenter}`} src={`http://localhost:3000${image.path.replaceAll("\\", "/").replace("public", "")}`} />
+            <Grid container alignContent="center">
+                <Grid item>
+                    <Tooltip title={alt}>
+                        <div className={classes.icon}>
+                            {image ? (
+                                <Image width={(64 * image.width) / image.height} height={64} className={`${!earned ? classes.greyscale : ""} ${classes.vcenter}`} src={`http://localhost:3000${image.path.replaceAll("\\", "/").replace("public", "")}`} />
 
-                    ) : (
-                        <Avatar className={`${(earned ? classes.earnedLetter : "")} ${classes.icon}`}>{alt[0].toLocaleUpperCase()}</Avatar>
-                    )}
-                </div>
-            </Tooltip>
+                            ) : (
+                                <Avatar className={`${(earned ? classes.earnedLetter : "")} ${classes.icon}`}>{alt[0].toLocaleUpperCase()}</Avatar>
+                            )}
+                        </div>
+                    </Tooltip>
+                </Grid>
+            </Grid>
         </Grid>
     );
 }

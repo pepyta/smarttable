@@ -27,6 +27,34 @@ const useStyles = makeStyles((theme) => {
     };
 });
 
+const countBadges = (data: GetSingleTableResponse, email: string) => {
+    const userid = data.students.find((student) => student.user.email === email).user.id;
+    
+    let point = 0;
+    data.tasks.forEach((task) => {
+        const completed = task.TaskCompletion.filter((completion) => completion.userid).length > 0;
+
+        if(completed){
+            point += task.points;
+        }
+    });
+
+    let countBadge = 0;
+    data.badges.forEach((badge) => {
+        const completed = badge.BadgeCompletion.filter((completion) => completion.userid === userid).length > 0;
+        
+        if(completed){
+            countBadge++;
+        }
+    });
+
+    if(countBadge === data.badges.length){
+        point *= 1.5;
+    }
+
+    return point;
+};
+
 export default function SingleTable({ session }: { session: Session }) {
     const router = useRouter();
     const [role, setRole]: [AvailableRoles, Dispatch<SetStateAction<AvailableRoles>>] = useState("NOT_CHOOSEN");
@@ -74,6 +102,13 @@ export default function SingleTable({ session }: { session: Session }) {
                                 <Typography variant="h6" component="h3" noWrap gutterBottom>
                                     {data.teacher.name}
                                 </Typography>
+                                {/* @ts-ignore */}
+                                {role === "STUDENT" ? (
+                                    <Typography variant="h6" component="h3" noWrap gutterBottom>
+                                        Pontjaim:{" "} 
+                                        <b>{countBadges(data, session.user.email)}</b>
+                                    </Typography>
+                                ) : ""}
                             </div>
                             <Tabs value={tab} onChange={handleTabChange} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="auto">
                                 <Tab value="TASKS" label="Feladatok" />

@@ -25,10 +25,10 @@ export default function StudentBadgeCategory({ role, show, allUser, badges, sess
                             Elért kitűzők
                         </Typography>
 
-                        <Grid container>
-                            <Grid item xs={3}>
-
-                            </Grid>
+                        <Grid container spacing={2}>
+                            {earned.map((badge) => (
+                                <StudentBadge alt={badge.name} earned={true} image={badge.image} />
+                            ))}
                         </Grid>
                     </CardContent>
                 </Card>
