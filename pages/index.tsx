@@ -7,6 +7,7 @@ import TableCreation from "../components/dashboard/TableCreation";
 import getTables, { GetTablesResponse } from "../lib/client/tables/get";
 import Image from "next/image";
 import Link from "next/link";
+import ListInvitations from "../components/tables/invitation/ListInvitations";
 
 
 const useStyles = makeStyles((theme) => {
@@ -40,6 +41,7 @@ export default function DashboardMain({ session }: { session: Session }) {
 			{loading ? <LoaderComponent /> : (
 				<Container>
 					<Grid container spacing={2}>
+						<ListInvitations />
 						{tables.map((table) => (
 							<Link href={`/tables/${table.id}`}>
 								<Grid item xs={12} md={6}>

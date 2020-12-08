@@ -23,7 +23,7 @@ export default async function deleteInvitation(req: NextApiRequest, res: NextApi
 
         if(invitation === null) throw new Error("Ezt a meghívást már elfogadtad!");
 
-        await prisma.invitations.delete({
+        await prisma.invitations.findFirst({
             where: {
                 id: invitation.id
             }

@@ -17,6 +17,9 @@ export default async function invite(req: NextApiRequest, res: NextApiResponse) 
         const table = await prisma.table.findOne({
             where: {
                 id
+            },
+            include: {
+                students: true
             }
         });
 
@@ -33,6 +36,8 @@ export default async function invite(req: NextApiRequest, res: NextApiResponse) 
                 email
             }
         });
+
+        if(table.students.filter((el) => el.userid === student.id).length !== 0) throw new Error("already student");
 
         if(student === null) throw new Error("Nem találtuk ezzel az email címmel tanulót.");
 

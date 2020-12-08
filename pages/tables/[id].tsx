@@ -5,7 +5,9 @@ import { useSnackbar } from "notistack";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Base from "../../components/Base";
 import LoaderComponent from "../../components/dashboard/Loader";
+import CreateInvitationFAB from "../../components/tables/invitation/CreateInvitationFAB";
 import BadgesList from "../../components/tables/single/badges/BadgesList";
+import ListStudents from "../../components/tables/single/students/ListStudents";
 import ListTasks from "../../components/tables/single/tasks/ListTasks";
 import getRole from "../../lib/client/role/get";
 import getSingleTable, { GetSingleTableResponse } from "../../lib/client/tables/getOne";
@@ -82,12 +84,16 @@ export default function SingleTable({ session }: { session: Session }) {
                     </Grid>
                 </Container>
             </Paper>
-            <Container>    
+            <Container>   
+                {/* @ts-ignore */}
+                <CreateInvitationFAB show={tab === "STUDENTS"} tableid={data.id} /> 
                 <Grid container justify="center">
                     <Grid item xs={12} md={8} className={classes.padTop}>
                         <ListTasks allUser={data.students.map((el) => el.user)} session={session} show={tab === "TASKS"} role={role} tasks={data.tasks} />
                         {/* @ts-ignore */}
                         <BadgesList allUser={data.students.map((el) => el.user)} session={session} show={tab === "BADGES"} role={role} badges={data.badges} />
+                        {/* @ts-ignore */}
+                        <ListStudents allUser={data.students.map((el) => el.user)} session={session} show={tab === "STUDENTS"} role={role} badges={data.badges} />
                     </Grid>
                 </Grid>
             </Container>
