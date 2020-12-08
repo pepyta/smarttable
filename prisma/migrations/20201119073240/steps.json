@@ -21,7 +21,7 @@
         "source": "db"
       },
       "argument": "provider",
-      "value": "[\"mysql\"]"
+      "value": "\"mysql\""
     },
     {
       "tag": "CreateArgument",
